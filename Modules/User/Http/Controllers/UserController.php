@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         return view('user::index');
     }
-
+ 
     /**
      * Show the form for creating a new resource.
      * @return Renderable
