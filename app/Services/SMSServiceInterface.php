@@ -4,5 +4,5 @@ namespace App\Services;
   
 Interface SMSServiceInterface
 {
-    public function sendSMS();
+    public function sendSMS(); 
 }
