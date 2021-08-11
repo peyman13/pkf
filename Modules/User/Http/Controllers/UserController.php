@@ -15,7 +15,6 @@ class UserController extends Controller
      */
     public function index(SMS $customServiceInstance)
     {
-        dd($customServiceInstance->sendSMS());
         return view('user::index');
     }
  

@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\SMS;
+use App\Services\APG;
 
-class SMSServiceProvider extends ServiceProvider
+
+class APGServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -15,7 +16,7 @@ class SMSServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('App\Services\SMSServiceInterface', function ($app) {
-            return new SMS($app['config']->get('sms'));
+            return new APG($app['config']->get('apg'));
         });
     }
 
@@ -27,8 +28,7 @@ class SMSServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->bind('App\Services\SMS', function ($app) {
-        
-            return new SMS($app['config']->get('sms'));
+            return new APG($app['config']->get('apg'));
         });
     }
 }
