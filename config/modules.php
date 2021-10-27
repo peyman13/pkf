@@ -116,6 +116,7 @@ return [
             'views' => ['path' => 'Resources/views', 'generate' => true],
             'test' => ['path' => 'Tests/Unit', 'generate' => true],
             'test-feature' => ['path' => 'Tests/Feature', 'generate' => true],
+            'graphql' => ['path' => 'Graphql', 'generate' => true],
             'repository' => ['path' => 'Repositories', 'generate' => false],
             'event' => ['path' => 'Events', 'generate' => false],
             'listener' => ['path' => 'Listeners', 'generate' => false],
