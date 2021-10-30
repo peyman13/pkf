@@ -16,7 +16,8 @@
         "mll-lab/laravel-graphql-playground": "^2.5",
         "nuwave/lighthouse": "dev-master",
         "nwidart/laravel-modules": "^8.2",
-        "owen-it/laravel-auditing": "^12.0"
+        "owen-it/laravel-auditing": "^12.0",
+        "zoilomora/elastic-apm-agent-php": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

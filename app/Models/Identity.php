@@ -9,7 +9,7 @@ class Identity extends Model
 {
     use HasFactory;
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -18,4 +18,11 @@ class Identity extends Model
         'mobile',
         'identity',
     ];
+
+    // protected static function booted()
+    // {
+    //     static::created(function ($Identity) {
+    //         echo json_encode($Identity)."\n";
+    //     });
+    // }
 }
