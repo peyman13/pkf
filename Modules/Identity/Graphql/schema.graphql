@@ -1,7 +1,7 @@
-type User {
+type Identity {
     id: ID!
-    name: String!
-    email: String!
+    identity: String!
+    mobile: String!
     created_at: DateTime!
     updated_at: DateTime!
 }
