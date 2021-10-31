@@ -23,9 +23,8 @@ class Identity extends Model
 
     protected static function booted()
     {
-        OTPSender::dispatch();
-        // static::created(function ($Identity) {
-        //     OTPSender::dispatch($Identity);
-        // });
+        static::created(function($Identity) {
+            OTPSender::dispatch($Identity);
+        });
     }
 }
