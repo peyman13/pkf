@@ -6,11 +6,12 @@ type Identity {
     updated_at: DateTime!
 }
 
+
 type Mutation {
     # createIdentity(identity: String! @rules(apply: ["unique:identities,identity"]),
     #                mobile: String! @rules(apply: ["size:11","unique:identities,mobile"])): Identity! @create
     createIdentity(identity: String!,
-                   mobile: String!): Identity! @create
+                   mobile: String!): Identity! @create @guard
 
     updateUser(id: ID!, 
                identity: String! ,
