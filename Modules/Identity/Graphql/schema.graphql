@@ -7,8 +7,10 @@ type Identity {
 }
 
 type Mutation {
-    createIdentity(identity: String! @rules(apply: ["unique:identities,identity"]),
-                   mobile: String! @rules(apply: ["size:11","unique:identities,mobile"])): Identity! @create
+    # createIdentity(identity: String! @rules(apply: ["unique:identities,identity"]),
+    #                mobile: String! @rules(apply: ["size:11","unique:identities,mobile"])): Identity! @create
+    createIdentity(identity: String!,
+                   mobile: String!): Identity! @create
 
     updateUser(id: ID!, 
                identity: String! ,

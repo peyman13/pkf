@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Events\OTPSender;
+
 
 class Identity extends Model
 {
@@ -19,10 +21,11 @@ class Identity extends Model
         'identity',
     ];
 
-    // protected static function booted()
-    // {
-    //     static::created(function ($Identity) {
-    //         echo json_encode($Identity)."\n";
-    //     });
-    // }
+    protected static function booted()
+    {
+        OTPSender::dispatch();
+        // static::created(function ($Identity) {
+        //     OTPSender::dispatch($Identity);
+        // });
+    }
 }
