@@ -177,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\SMSServiceProvider::class,
         App\Providers\APGServiceProvider::class,
+        App\Providers\OTPServiceProvider::class,
 
     ],
 

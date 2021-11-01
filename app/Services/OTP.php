@@ -10,9 +10,10 @@ class OTP  implements OTPServiceInterface
     public function __construct(array $data)
     {
       $this->config = $data;
-    } 
-    public function sendOTP(){
-        
+    }  
+ 
+    public function getOTP()
+    {
+      return "asdf";
     }
-
 }
