@@ -28,8 +28,8 @@ class OTPSend
      */
     public function handle(OTPSender $event)
     {
-        $otp = new OTP([]);
-        dd($otp->getOTP());
+        // $otp = new OTP([]);
+        // dd($otp->getOTP());
         // echo json_encode($event)."\n";
         // // json_encode($event);die;
     }

@@ -18,10 +18,10 @@ class AuthController extends Controller
         $user = User::where('username', $request['username'])->first();
 
         if ($user) {
-            // $token = $user->createToken('auth_token')->plainTextToken;
-            OTPSender::dispatch();
+            $token = $user->createToken('auth_token')->plainTextToken;
+            // OTPSender::dispatch();
 
-            // return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
+            return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
         } else {
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|unique:users',
@@ -38,9 +38,9 @@ class AuthController extends Controller
                 'mobile' => $request->mobile,
             ]);
 
-            // $token = $user->createToken('auth_token')->plainTextToken;
-            OTPSender::dispatch();
-            // return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
+            $token = $user->createToken('auth_token')->plainTextToken;
+            // OTPSender::dispatch();
+            return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
         }
 
         

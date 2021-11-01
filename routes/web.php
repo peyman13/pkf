@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Services\OTP;
 
 
 /*
@@ -16,9 +15,6 @@ use App\Services\OTP;
 */
 
 Route::get('/', function () {
-    $otp = new OTP([]);
-    dd($otp->getOTP());
-
     return view('welcome');
 });
 
@@ -26,5 +22,5 @@ Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login'])
 Route::post('/otp', [App\Http\Controllers\API\AuthController::class, 'otp']);
 
 
-Auth::routes();
+// Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
