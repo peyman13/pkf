@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Events\OTPSender;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Services\OTP;
+
 
 class OTPSend
 {
@@ -26,6 +28,8 @@ class OTPSend
      */
     public function handle(OTPSender $event)
     {
+        $otp = new OTP([]);
+        dd($otp->getOTP());
         // echo json_encode($event)."\n";
         // // json_encode($event);die;
     }
