@@ -23,6 +23,7 @@ class User extends Authenticatable implements HasApiTokensContract
     protected $fillable = [
         'username',
         'password',
+        'mobile',
     ];
 
     /**

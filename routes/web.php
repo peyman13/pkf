@@ -17,12 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//API route for register new user
-Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
-//API route for login user
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+Route::post('/otp', [App\Http\Controllers\API\AuthController::class, 'otp']);
 
 
-// Auth::routes();
-
+Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
