@@ -1,18 +1,17 @@
 <?php
 
 return [
-
-    'enabled' => env('AUDITING_ENABLED', true),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Audit Implementation
-    |--------------------------------------------------------------------------
-    |
-    | Define which Audit model implementation should be used.
-    |
-    */
-
-    'implementation' => OwenIt\Auditing\Models\Audit::class,
-
+    'env' => [
+        'local' => [
+            'api_url' => 'http://172.30.30.76/microsms/sms/otp',
+            'headers' => [
+                'Api-Key'=>'175698007dac8509f772dfd2b2b668f9'
+            ],
+            'email' => 'mypishkhan@epishkhan.ir',
+            'password' => 'JHssX9TsEDeFV5ut',
+            'debug' => true,
+            'timeout' => 30,
+            'otp_type' => "num"
+        ],
+    ],
 ];

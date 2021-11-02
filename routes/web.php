@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Services\OTP;
 
 
 /*
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $otp = new OTP([]);
+    dd($otp->getOTP("09124655785"));
+
     return view('welcome');
 });
 

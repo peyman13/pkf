@@ -6,9 +6,10 @@ use App\Events\OTPSender;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\OTP;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-
-class OTPSend
+class OTPSend implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -17,7 +18,7 @@ class OTPSend
      */
     public function __construct()
     {
-        //
+        // dd($user);
     }
 
     /**
@@ -28,9 +29,10 @@ class OTPSend
      */
     public function handle(OTPSender $event)
     {
-        // $otp = new OTP([]);
-        // dd($otp->getOTP());
-        // echo json_encode($event)."\n";
-        // // json_encode($event);die;
+        $otp = new OTP([]);
+        $user = User::find($event->data->id);
+        $user->password = $otp->getOTP($event->data->mobile);
+        $user->password = Hash::make($user->password);
+        $user->save();
     }
 }
