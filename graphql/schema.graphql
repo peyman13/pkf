@@ -11,5 +11,41 @@ type Query {
 
     users: [User!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     user(id: ID @eq): User @find
+    
+    audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
+    audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
+}
+
+"""
+Add a dynamically client-controlled WHERE condition to a fields query.
+"""
+directive @whereConditions(
+  """
+  Restrict the allowed column names to a well-defined list.
+  This improves introspection capabilities and security.
+  Mutually exclusive with the `columnsEnum` argument.
+  """
+  columns: [String!]
+
+  """
+  Use an existing enumeration type to restrict the allowed columns to a predefined list.
+  This allowes you to re-use the same enum for multiple fields.
+  Mutually exclusive with the `columns` argument.
+  """
+  columnsEnum: String
+) on ARGUMENT_DEFINITION
+
+
+type Audit {
+    id: ID!
+    user_type: String!
+    user_id: String!
+    event: String!
+    auditable_type: String!
+    auditable_id: String!
+    new_values: String!
+    old_values: String!
+    created_at: DateTime!
+    updated_at: DateTime!
 }
 

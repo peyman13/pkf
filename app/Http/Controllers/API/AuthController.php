@@ -4,9 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Auth;
-use Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Events\OTPSender;
 
@@ -19,6 +18,9 @@ class AuthController extends Controller
 
         if ($user) {
             OTPSender::dispatch($user);
+
+            return response()->json(['status' => 1], 200)->header('Content-Type', 'application/json');
+
         } else {
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|unique:users',
@@ -34,7 +36,8 @@ class AuthController extends Controller
                 'mobile' => $request->mobile,
             ]);
             OTPSender::dispatch($user);
-            return response()->json(['status' => 1]);
+
+            return response()->json(['status' => 1], 200)->header('Content-Type', 'application/json');
         }
     }
 
@@ -51,6 +54,8 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
     }
+
+    
 
     public function logout()
     {
