@@ -16,14 +16,14 @@ use App\Services\OTP;
 */
 
 Route::get('/', function () {
-    $otp = new OTP([]);
-    dd($otp->getOTP("09124655785"));
-
+    // $otp = new OTP([]);
+    // dd($otp->getOTP("09124655785"));
     return view('welcome');
 });
 
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 Route::post('/otp', [App\Http\Controllers\API\AuthController::class, 'otp']);
+Route::get('/otp-refresh', [App\Http\Controllers\API\AuthController::class, 'otpRefresh']);
 
 
 // Auth::routes();

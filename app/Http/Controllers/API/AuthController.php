@@ -20,7 +20,6 @@ class AuthController extends Controller
             OTPSender::dispatch($user);
 
             return response()->json(['status' => 1], 200)->header('Content-Type', 'application/json');
-
         } else {
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|unique:users',
@@ -46,7 +45,8 @@ class AuthController extends Controller
     {
         if (!Auth::attempt($request->only('username', 'password'))) {
             return response()
-                ->json(['message' => 'Unauthorized'], 401);
+                ->json(['message' => 'Unauthorized'], 401)
+                ->header('Content-Type', 'application/json');
         }
 
         $user = User::where('username', $request['username'])->firstOrFail();
@@ -55,8 +55,21 @@ class AuthController extends Controller
         return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
     }
 
-    
+    // method for refresh otp
+    public function otpRefresh(Request $request)
+    {
+        $user = User::where('username', $request['username'])->first();
+        if ($user) {
+            OTPSender::dispatch($user);
 
+            return response()->json(['status' => 1], 200)->header('Content-Type', 'application/json');
+        }
+
+        return response()->json(['status' => -1], 301)
+            ->header('Content-Type', 'application/json');
+    }
+
+    // method for refresh logout
     public function logout()
     {
         auth()->user()->tokens()->delete();
