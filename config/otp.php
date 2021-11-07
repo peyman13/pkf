@@ -3,12 +3,12 @@
 return [
     'env' => [
         'local' => [
-            'api_url' => 'http://172.30.30.76/microsms/sms/otp',
+            'api_url' => env('OTP_URL', true),
             'headers' => [
-                'Api-Key'=>'175698007dac8509f772dfd2b2b668f9'
+                'Api-Key' => env('OTP_API_KEY', true),
             ],
-            'email' => 'mypishkhan@epishkhan.ir',
-            'password' => 'JHssX9TsEDeFV5ut',
+            'email' => env('OTP_EMAIL', true),
+            'password' => env('OTP_PASSWORD', true),
             'debug' => true,
             'timeout' => 30,
             'otp_type' => "num"

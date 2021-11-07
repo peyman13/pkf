@@ -21,10 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// AAA API
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 Route::post('/otp', [App\Http\Controllers\API\AuthController::class, 'otp']);
-Route::get('/otp-refresh', [App\Http\Controllers\API\AuthController::class, 'otpRefresh']);
-
+Route::post('/otp-refresh', [App\Http\Controllers\API\AuthController::class, 'otpRefresh']);
 
 // Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
