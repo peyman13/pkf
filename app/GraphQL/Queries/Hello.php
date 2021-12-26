@@ -11,5 +11,6 @@ class Hello
     public function __invoke($_, array $args)
     {
         // TODO implement the resolver
+        return "Hello, {$args['name']}!";
     }
 }

@@ -22,6 +22,8 @@ class User extends Authenticatable implements HasApiTokensContract, Auditable
      *
      * @var array
      */
+
+
     protected $fillable = [
         'username',
         'password',

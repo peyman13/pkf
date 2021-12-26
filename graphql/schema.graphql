@@ -14,7 +14,12 @@ type Query {
     
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
+
+    prkar(method: String = "",id: String = ""): String
+
 }
+
+
 
 """
 Add a dynamically client-controlled WHERE condition to a fields query.
@@ -48,4 +53,6 @@ type Audit {
     created_at: DateTime!
     updated_at: DateTime!
 }
+
+
 
