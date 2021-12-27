@@ -16,13 +16,16 @@ type Query {
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
     prkar(method: String = "",id: String = ""): String
+    IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
 
 }
 
 
 
+
 """
 Add a dynamically client-controlled WHERE condition to a fields query.
+@guard
 """
 directive @whereConditions(
   """

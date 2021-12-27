@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Services\OTP;
+use App\Services\IBAN;
 
 
 /*
@@ -16,8 +16,8 @@ use App\Services\OTP;
 */
 
 Route::get('/', function () {
-    // $otp = new OTP([]);
-    // dd($otp->getOTP("09124655785"));
+    $otp = new IBAN([]);
+    dd($otp->isValidIBAN("IR540120000000004777631304", "0010886941", "19999999"));
     return view('welcome');
 });
 

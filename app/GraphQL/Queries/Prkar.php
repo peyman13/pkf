@@ -27,11 +27,6 @@ class Prkar
 
         $prkarService = new PrkarService();
         return $prkarService->getProvince();
-        // return Http::withHeaders([])
-        //         // ->withOptions(['debug' => true])
-        //         ->timeout(30)
-        //         ->get('http://192.168.22.137/prkar/v1/province');
-        // return Http::get('http://192.168.22.137/prkar/v1/province');
     }
     
     protected function competency($args){
