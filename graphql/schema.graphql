@@ -5,6 +5,13 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 #import ../Modules/*/Graphql/*.graphql
 
+enum prkar {
+  PROVINCE @enum(value: "province")
+  COMPETENCY @enum(value: "competency")
+  CITY @enum(value: "city")
+  MUNICIPALITY @enum(value: "municipality")
+}
+
 type Query {
     identities: [Identity!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     identity(id: ID @eq): Identity @find
@@ -15,7 +22,7 @@ type Query {
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
-    prkar(method: String = "",id: String = ""): String
+    prkar(method: prkar,id: String = ""): String
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
 
 }
