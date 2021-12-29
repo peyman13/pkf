@@ -5,12 +5,77 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 #import ../Modules/*/Graphql/*.graphql
 
+
 enum prkar {
   PROVINCE @enum(value: "province")
   COMPETENCY @enum(value: "competency")
   CITY @enum(value: "city")
   MUNICIPALITY @enum(value: "municipality")
+  EMPLOYEE @enum(value: "employee")
 }
+
+enum prkar_gender {
+  WMN @enum(value: "WMN")
+  MAN @enum(value: "MAN")
+}
+
+enum prkar_nationality {
+  foreign @enum(value: "foreign")
+  iranian @enum(value: "iranian")
+}
+
+enum prkar_education {
+  NED @enum(value: "NED")
+  BSD @enum(value: "BSD")
+  GUID @enum(value: "GUID")
+  HIGH @enum(value: "HIGH")
+  DPA @enum(value: "DPA")
+  ADPA @enum(value: "ADPA")
+  BCH @enum(value: "BCH")
+  MTR @enum(value: "MTR")
+  PPHD @enum(value: "PPHD")
+  PHD @enum(value: "PHD")
+  CLER @enum(value: "CLER")
+}
+
+enum prkar_marital_status {
+  SNG @enum(value: "SNG")
+  MRD @enum(value: "MRD")
+  MOL @enum(value: "MOL")
+}
+
+enum prkar_military_status {
+  EXCL @enum(value: "EXCL")
+  PASS @enum(value: "PASS")
+  ILEG @enum(value: "ILEG")
+  pcIno @enum(value: "pcIno")
+}
+
+enum prkar_religion{
+  ISLM @enum(value: "ISLM")
+  CHRS @enum(value: "CHRS")
+  JEWISH @enum(value: "JEWISH")
+  ZRSH @enum(value: "ZRSH")
+  OTHER @enum(value: "OTHER")
+}
+
+enum prkar_health_status {
+  NHD @enum(value: "NHD")
+  HLT @enum(value: "HLT")
+}
+
+enum prkar_sect {
+  SUNI @enum(value: "SUNI")
+  SHIA @enum(value: "SHIA")
+}
+
+enum prkar_company {
+  PRV @enum(value: "PRV")
+  PUB @enum(value: "PUB")
+  COP @enum(value: "COP")
+  OTHER @enum(value: "OTHER")
+}
+
 
 type Query {
     identities: [Identity!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
@@ -22,10 +87,54 @@ type Query {
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
-    prkar(method: prkar,id: String = ""): String
+    prkar(method: prkar, id: String = "", data: PrkarRegisterData!): String!
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
 
 }
+
+input PrkarRegisterData {
+  employee: Employee!,
+  person: Person!,
+  starter: String,
+  iban: String,
+  ekycVideoReference: String
+}
+
+input Employee {
+  education: prkar_education,
+  maritalStatus: prkar_marital_status,
+  militaryStatus: prkar_military_status,
+  religion: prkar_religion,
+  bodyState: prkar_health_status,
+  sect: prkar_sect,
+  numberOfChildren: String
+}
+
+input Person {
+  firstName: String,
+  lastName: String,
+  birthDate: String,
+  sex: prkar_gender,
+  nationalId: String,
+  identityId: String,
+  iban: String
+  personImage: String
+  nationality: prkar_nationality,
+  homeContact: HomeContact!
+}
+input HomeContact {
+  postalCode: String,
+  phoneNumberCode: String,
+  phoneNumber: String,
+  mobileNumber: String,
+  province: String,
+  city: String,
+  address: String,
+  email: String
+}
+
+
+
 
 
 

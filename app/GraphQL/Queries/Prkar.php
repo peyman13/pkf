@@ -1,45 +1,52 @@
 <?php
 
 namespace App\GraphQL\Queries;
-use Illuminate\Support\Facades\Http;
+
 use App\Services\Prkar as PrkarService;
 
 
 class Prkar
 {
     public function __invoke($rootValue, array $args): string
-    {   
-        if($args['method'] == "province")
-            return $this->province($args);
-
-        if($args['method'] == "competency")
-            return $this->competency($args);
-        
-        if($args['method'] == "city")
-            return $this->city($args);
-        
-        if($args['method'] == "municipality")
-            return $this->city($args);
-        
+    {
+        return match ($args['method']) {
+            "province" => $this->province($args),
+            "competency" => $this->competency($args),
+            "city" => $this->city($args),
+            "municipality" => $this->city($args),
+            "employee" => $this->employee($args),
+            default => 'Invalid Method !',
+        };
     }
 
-    protected function province($args){
+    protected function province($args)
+    {
 
         $prkarService = new PrkarService();
         return $prkarService->getProvince();
     }
-    
-    protected function competency($args){
-        return Http::get('http://192.168.22.137/prkar/v1/basic/competency');
+
+    protected function competency($args)
+    {
+        $prkarService = new PrkarService();
+        return $prkarService->getCompetency();
     }
 
-    protected function city($args){
-        return Http::get("http://192.168.22.137/prkar/v1/province/city/{$args['id']}");
-    }  
-    
-    protected function municipality($args){
-        return Http::get("http://192.168.22.137/prkar/v1/province/municipality/{$args['id']}");
+    protected function city($args)
+    {
+        $prkarService = new PrkarService();
+        return $prkarService->getCity($args['id']);
     }
 
+    protected function municipality($args)
+    {
+        $prkarService = new PrkarService();
+        return $prkarService->getMunicipality($args['id']);
+    }    
     
+    protected function employee($args)
+    {
+        $prkarService = new PrkarService();
+        return $prkarService->setEmployee($args['data']);
+    }
 }
