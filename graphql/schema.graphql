@@ -87,7 +87,7 @@ type Query {
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
-    prkar(method: prkar, id: String = "", data: PrkarRegisterData!): String!
+    prkar(method: prkar, id: String = "", data: PrkarRegisterData): String!
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
 
 }
