@@ -24,6 +24,7 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|unique:users',
                 'mobile' => 'required|string|min:11',
+                'captcha' => 'required|captcha_api:'. request('key') . ',math'
             ]);
 
             if ($validator->fails()) {

@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "mateusjunges/laravel-acl": "^3.0",
+        "mews/captcha": "^3.2",
         "mll-lab/graphql-php-scalars": "^4",
         "mll-lab/laravel-graphql-playground": "^2.5",
         "mll-lab/laravel-graphql-voyager": "^1.0",
