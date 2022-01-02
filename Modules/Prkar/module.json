@@ -1,0 +1,13 @@
+{
+    "name": "Prkar",
+    "alias": "prkar",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Prkar\\Providers\\PrkarServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

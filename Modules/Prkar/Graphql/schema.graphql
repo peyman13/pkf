@@ -1,0 +1,29 @@
+type Service {
+    id: ID!
+    users_id: String!
+    service_id: String!
+    steps: String!
+    request: String!
+    response: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+
+type Mutation {
+    
+    createService(users_id: ID @auth,
+                  service_id: String!,
+                  request:String!,
+                  response:String!,
+                  steps:String!,
+                  ): Service! @create @guard 
+
+    updateService(id: ID!, 
+                  users_id: ID!,
+                  service_id: String!,
+                  request:String!,
+                  response:String!,
+                  steps:String!,
+                  ): Service @update @guard
+}
