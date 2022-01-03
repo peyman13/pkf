@@ -144,7 +144,7 @@ class Prkar  implements PrkarServiceInterface
                 ->timeout(self::$_config['timeout'])
                 ->post(self::$_config['api_url'] . "/v1/party/employee", $requestContent);
             
-            if (self::$_response->status() == 200 && self::$_response->json()["errorCode"] != 400) {
+            if (self::$_response->status() == 200) {
                 Log::channel('service_success')
                     ->info('Prkar_Service=>setEmployee result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 

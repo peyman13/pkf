@@ -91,10 +91,33 @@ type Query {
 
     prkar(method: prkar, id: String = "", data: PrkarRegisterData): String!
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
+    SCS(inquiryType: ID = "",
+        nationalCardSerial: String = "",
+        nationalCode: String = "",
+        mobileNumber: String = "",
+        birthDate: String = "" ,
+        inquiryValidDuration: String = "" ): String
     
     me: User @auth
 
 
+}
+type Mutation {
+    
+    createService(users_id: ID @auth,
+                  service_id: String!,
+                  request:String!,
+                  response:String!,
+                  steps:String!,
+                  ): Service! @create @guard 
+
+    updateService(id: ID!, 
+                  users_id: ID!,
+                  service_id: String!,
+                  request:String!,
+                  response:String!,
+                  steps:String!,
+                  ): Service @update @guard
 }
 
 input PrkarRegisterData {
@@ -122,7 +145,6 @@ input Person {
   sex: prkar_gender,
   nationalId: String,
   identityId: String,
-  iban: String
   personImage: String
   nationality: prkar_nationality,
   homeContact: HomeContact!
