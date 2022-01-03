@@ -11,6 +11,7 @@ enum prkar {
   CITY @enum(value: "city")
   MUNICIPALITY @enum(value: "municipality")
   EMPLOYEE @enum(value: "employee")
+  StepTwo @enum(value: "steptwo")
 }
 
 enum prkar_gender {
@@ -89,7 +90,7 @@ type Query {
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
-    prkar(method: prkar, id: String = "", data: PrkarRegisterData): String!
+    prkar(method: prkar, id: String = "", data: PrkarRegisterData, stepTwo: PrkarStepTwo): String!
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
     SCS(inquiryType: ID = "",
         nationalCardSerial: String = "",
@@ -118,6 +119,14 @@ type Mutation {
                   response:String!,
                   steps:String!,
                   ): Service @update @guard
+}
+
+input PrkarStepTwo {
+  birthDate: String!,
+  nationalId: String!,
+  mobileNumber: String!,
+  nationalCardSerial: String!,
+  type: String
 }
 
 input PrkarRegisterData {

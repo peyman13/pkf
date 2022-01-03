@@ -3,10 +3,13 @@
 namespace App\GraphQL\Queries;
 
 use App\Services\Prkar as PrkarService;
+use App\Trait\Steps;
 
 
 class Prkar
 {
+    use Steps;
+    
     public function __invoke($rootValue, array $args): string
     {
         return match ($args['method']) {
@@ -15,6 +18,7 @@ class Prkar
             "city" => $this->city($args),
             "municipality" => $this->city($args),
             "employee" => $this->employee($args),
+            "steptwo" => $this->primaryInquiry($args),
             default => 'Invalid Method !',
         };
     }
@@ -48,5 +52,7 @@ class Prkar
     {
         $prkarService = new PrkarService();
         return $prkarService->setEmployee($args['data']);
-    }
+    }    
+    
+
 }
