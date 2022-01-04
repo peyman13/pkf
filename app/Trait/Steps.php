@@ -15,6 +15,8 @@ trait Steps
             'steps' => "confirmService",
             'users_id' => Auth::user()->id,
             'service_id' => $this->SeriveId,
+            'request' => "{}",
+            'response' => "{}",
             'created_at' => '2022-01-03 11:40:24',
             'updated_at' => '2022-01-03 11:40:24'
         ]);
