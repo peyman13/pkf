@@ -17,47 +17,60 @@ use App\Services\Prkar as PrkarService;
 */
 
 Route::get('/', function () {
-    // $requestContent = [
-    //     "employee" => [
-    //         "education" => "BCH",
-    //         "maritalStatus" => "SNG",
-    //         "militaryStatus" => "EXCL",
-    //         "religion" => null,
-    //         "bodyState" => "HLT",
-    //         "sect" => null,
-    //         "numberOfChildren" => 0
-    //     ],
-    //     "person" => [
-    //         "firstName" => "هادي",
-    //         "lastName" => "قهرمان زاده باروق",
-    //         "fatherName" => "كرم",
-    //         "birthDate" => "1373/04/25",
-    //         "sex" => "MAN",
-    //         "nationalId" => "0010886941",
-    //         "identityId" => "0",
-    //         "iban" => "14508648641450864864",
-    //         "personImage" => null,
-    //         "nationality" => "iranian",
-    //         "homeContact" => [
-    //             "postalCode" => "1431814519",
-    //             "phoneNumberCode" => "021",
-    //             "phoneNumber" => "66179376",
-    //             "mobileNumber" => "9124655785",
-    //             "province" => "23",
-    //             "city" => "2301",
-    //             "address" => "زنجان جنوبی، دامپزشکی نرسیده به یادگار  کوچه محسن بن بست بهمن پ 2 واحد 2",
-    //             "email" => "hadi.gb73@gmail.com"
-    //         ]
-    //     ],
-    //     "starter" => "online",
-    //     "iban" => "IR550590014681302536847001",
-    //     "ekycVideoReference" => "IR550590014681302536847001"
-    // ];
-    // $prkarService = new PrkarService();
-    // dd($prkarService->setEmployee($requestContent));
-    // $otp = new IBAN([]);
-    // dd($otp->isValidIBAN("IR540120000000004777631304", "0010886941", "19999999"));
-    return view('welcome');
+
+    $pg_key = "34eaafa27f89c94b9901f33c2b4c71bc78a0ee9e12f118604722785fb25404b3d02cf1123e1daa64d84972d06527166286e0b22579ef3add448c4cde1a2e2224";
+    $pg_terminal = "71000002";
+    $pg_merchant = "213143400000002";
+    $pg_order_id    = "234234";
+    $pg_revert_url  = "http://cpors.icsdev.ir/test";
+    $pg_customer_id = "3245645645256";
+
+    $pg_transaction_amount = "100000";
+    $pg_date               = date('Y/m/d');
+    $pg_time               = date('H:i:s');
+    $pg_sign               = $pg_merchant . '*' . $pg_terminal . '*' . $pg_order_id . '*' . $pg_revert_url . '*' . $pg_transaction_amount . '*' . $pg_date . '*' . $pg_time;
+    
+    $pg_sign_hash       = hash_hmac('sha256', $pg_sign, pack('H*', $pg_key));
+    // merchant_id*terminal_id*order_id*revert_url*transaction_amount*split_amounts*date*time*identifier
+    // "MERCHANT0000501*P0001501*234234*http://cpors.icsdev.ir/test*100000*2022/01/04*06:45:20"
+    // dd($pg_sign_hash);
+
+    $data = array(
+        'merchant_id' => $pg_merchant,
+        'terminal_id' => $pg_terminal,
+        'order_id' => $pg_order_id,
+        'revert_url' => $pg_revert_url,
+        'customer_id' => $pg_customer_id,
+        'transaction_amount' => $pg_transaction_amount,
+        'date' => $pg_date,
+        'time' => $pg_time,
+        'metadata' => '',
+        'sign' => $pg_sign_hash,
+    );
+
+    $ipg_url = "https://pec.shaparak.ir/NewPG/service/payment/transactionRequest";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $ipg_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    // dd($result);
+    curl_close ($ch);
+    $transaction_id = explode(",",$result)[1];
+    echo ($transaction_id)."<br />";
+    
+    $transactionSign = hash_hmac('sha256', $transaction_id , pack('H*', $pg_key));
+    echo ($transactionSign)."<br />";
+
+    echo '<form action="https://pec.shaparak.ir/NewPG/pay" method="POST">
+        <input type="text" name="transaction_id" value="'.$transaction_id.'"/>
+        <input type="text" name="sign" value="'.$transactionSign.'"/>
+        <input type="submit" value="submit"/>
+        </form>';
+    // return view('welcome');
 });
 
 // AAA API

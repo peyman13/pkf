@@ -11,6 +11,7 @@ enum prkar {
   CITY @enum(value: "city")
   MUNICIPALITY @enum(value: "municipality")
   EMPLOYEE @enum(value: "employee")
+  StepOne @enum(value: "stepone")
   StepTwo @enum(value: "steptwo")
 }
 

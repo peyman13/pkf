@@ -11,14 +11,14 @@ class ServiceRepository
 
     public function insertSteps($data)
     {
-        return DB::table($this->db)
-                    ->insertGetId($data);
+        return json_encode(DB::table($this->db)
+            ->insertGetId($data));
     }
-    
+
     public function updateState($id, $data)
     {
         return DB::table($this->db)
-                    ->where('id', $id)
-                    ->update($data);
+            ->where('id', $id)
+            ->update($data);
     }
 }

@@ -9,7 +9,9 @@ use App\Trait\Steps;
 class Prkar
 {
     use Steps;
-    
+
+    protected $SeriveId = "4311";
+
     public function __invoke($rootValue, array $args): string
     {
         return match ($args['method']) {
@@ -18,6 +20,7 @@ class Prkar
             "city" => $this->city($args),
             "municipality" => $this->city($args),
             "employee" => $this->employee($args),
+            "stepone" => $this->confirmService($args),
             "steptwo" => $this->primaryInquiry($args),
             default => 'Invalid Method !',
         };
