@@ -11,6 +11,27 @@ class IPGParsian  implements IPGParsianServiceInterface
 {
     private static $_config = [];
     private static $_response = [];
+    private static $ErrorArray   = [
+        '9102' => 'مبلغ نامعتبر',
+        '9104' => ' currency وارد شده صحیح نمیباشد',
+        '9201' => ' دارنده کارت از پرداخت انصراف داده  ',
+        '9214' => 'شماره تراکنش معتبر نیست ',
+        '9215' => 'چرخه تراکنش نقض شده است ',
+        '9217' => 'ترامنش دارای مغایرت است ',
+        '9219' => ' زمان مورد نظر به پایان رسیده و تراکنش منقضی میباشد',
+        '9220' => 'تراکنش قبلا برگشت خورده است ',
+        '9221' => ' تراکنش قبلا با موفقیت انجام گردیده است',
+        '9222' => ' دسترسی همزمان به تراکنش',
+        '9223' => 'خطای غیره منتظره ',
+        '9224' => ' قبض قبلا پرداخت شده است',
+        '9301' => 'درخواست با امضای دیجیتال مطابقت ندارد ',
+        '9302' => 'دسترسی غیر مجاز ',
+        '9501' => 'عملیات ناموفق پاسخی از سوئیچ دریافت نشد ',
+        '9502' => 'عملیات ناموفق خطای ISO رخ داده ',
+        '9503' => 'عملیات ناموفق ',
+        '9601' => 'پارامترهای ورودی درست نیست ',
+        ''     => ' ',
+    ];
 
 
     private static function _init()
@@ -21,93 +42,61 @@ class IPGParsian  implements IPGParsianServiceInterface
     public function getTransaction(string $orderId, string $customer, string $price)
     {
         self::_init();
-        
+
         try {
             $key = self::$_config['pg_key'];
-            $terminal = self::$_config['terminal'];
-            $merchant = self::$_config['merchant'];
-            $order_id = $orderId;
-            $revert_url = "http://cpors.icsdev.ir/test";
-            $customer_id = $customer;
-            $transaction_amount = $price;
-            $date = date('Y/m/d');
-            $time = date('H:i:s');
-            $sign = $merchant . '*' . $terminal . '*' . $order_id . '*' . $revert_url . '*' . $transaction_amount . '*' . $date . '*' . $time;;
-
-            $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
 
             $request = [
-                'merchant_id' => $merchant,
-                'terminal_id' => $terminal,
-                'order_id' => $order_id,
-                'revert_url' => $revert_url,
-                'customer_id' => $customer_id,
-                'transaction_amount' => $transaction_amount,
-                'date' => $date,
-                'time' => $time,
-                'metadata' => '',
-                'sign' => $sign_hash,
+                'terminal_id' => self::$_config['terminal'],
+                'merchant_id' => self::$_config['merchant'],
+                'order_id' => $orderId,
+                'revert_url' => self::$_config['revert_url'],
+                'customer_id' => $customer,
+                'transaction_amount' => $price,
+                'date' => date('Y/m/d'),
+                'time' => date('H:i:s')
             ];
+
+            $sign = implode("*", $request);
+
+            $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
+            
+            $request[] = ['metadata' => '',
+                          'sign' => $sign_hash];
 
             $IPGurl = self::$_config['IPG_url'];
             $response = Http::asForm()
-                ->post($IPGurl, $request);
+                        ->post($IPGurl, $request);
+                        
             $transaction_id = explode(",", $response)[1];
 
-            return [
-                "transactionId" => $transaction_id,
-                "transactionSign" => hash_hmac('sha256', $transaction_id, pack('H*', $key))
-            ];
+            if ($response === FALSE) {
+                Log::channel('service_faild')
+                    ->emergency('IPGParsian_Service=>getIPGParsian result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+                return [];
+            }
+
+            if (explode(",", $response)[0] == "00") {
+
+                Log::channel('service_success')
+                    ->info('IPGParsian_Service=>getIPGParsian result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+
+                return [
+                    "transactionId" => $transaction_id,
+                    "transactionSign" => hash_hmac('sha256', $transaction_id, pack('H*', $key))
+                ];
+            }
+            if (explode(",", $response)[0] != '00') {
+                Log::channel('service_faild')
+                    ->emergency('IPGParsian_Service=>getIPGParsian result=' . json_encode($this->ErrorArray[explode(",", $response)[0]], JSON_UNESCAPED_UNICODE));
+
+                return $this->ErrorArray[explode(",", $response)[0]];
+            }
         } catch (\Exception $e) {
             Log::channel('service_faild')
-                ->emergency('IBAN_Service=>getIBAN' . $e->getMessage());
+                ->emergency('IPGParsian_Service=>getIPGParsian' . $e->getMessage());
             return false;
         }
-
-
-
-
-
-        //     try {
-
-        //         self::$_response = Http::withHeaders(self::$_config['headers'])
-        //             // ->withOptions(['debug' => true])
-        //             ->timeout(self::$_config['timeout'])
-        //             ->post(self::$_config['api_url'], $requestContent);
-
-        //         $response = self::$_response->json();
-
-        //         if (
-        //             self::$_response->status() === 200 &&
-        //             self::$_response->json('data')['transactionState'] == "SUCCESS" &&
-        //             (self::$_response->json('data')['respObject'] == "MOST_PROBABLY" || self::$_response->json('data')['respObject'] == "YES") &&
-        //             self::$_response->json('message') == "OK"
-        //         ) {
-        //             Log::channel('service_success')
-        //                 ->info('IBAN_Service=>getIBAN result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
-
-        //             return true;
-        //         } else if (
-        //             self::$_response->status() === 200 &&
-        //             self::$_response->json('data')['transactionState'] == "SUCCESS" &&
-        //             (self::$_response->json('data')['respObject'] == "UNKNOWN" || self::$_response->json('data')['respObject'] == "NO") &&
-        //             self::$_response->json('message') == "OK"
-        //         ) {
-        //             Log::channel('service_faild')
-        //                 ->emergency('IBAN_Service=>getIBAN result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
-
-        //             return false;
-        //         } else {
-        //             Log::channel('service_faild')
-        //                 ->emergency('IBAN_Service=>getIBAN result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
-
-        //             return false;
-        //         }
-        //     } catch (\Exception $e) {
-        //         Log::channel('service_faild')
-        //             ->emergency('IBAN_Service=>getIBAN' . $e->getMessage());
-        //         return false;
-        //     }
     }
 
     // request is array of post parameters that sent by server IPG
