@@ -4,6 +4,7 @@ namespace App\Trait;
 
 use App\Repository\ServiceRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Services\IPGParsian;
 
 trait Steps
 {
@@ -31,5 +32,11 @@ trait Steps
             'request' => json_encode($args['stepTwo'])
         ]);
         return json_encode(["id" => $args['id']]);
+    }    
+    
+    protected function payment($args)
+    {
+        $Pay = new IPGParsian();
+        return json_encode($Pay->getTransaction("234234","23445345","12000"));
     }
 }

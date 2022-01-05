@@ -13,6 +13,7 @@ enum prkar {
   EMPLOYEE @enum(value: "employee")
   StepOne @enum(value: "stepone")
   StepTwo @enum(value: "steptwo")
+  StepThree @enum(value: "stepthree")
 }
 
 enum prkar_gender {
@@ -91,7 +92,7 @@ type Query {
     audits: [Audit!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
     audit(where: _@whereConditions(columns: ["user_type", "id"])): Audit @find
 
-    prkar(method: prkar, id: String = "", data: PrkarRegisterData, stepTwo: PrkarStepTwo): String!
+    prkar(method: prkar, id: String = "", data: PrkarRegisterData, stepTwo: PrkarStepTwo): String
     IBAN(iban: String = "",nationalCode: String = "",birthDate: String = ""): String
     SCS(inquiryType: ID = "",
         nationalCardSerial: String = "",

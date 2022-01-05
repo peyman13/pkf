@@ -22,6 +22,7 @@ class Prkar
             "employee" => $this->employee($args),
             "stepone" => $this->confirmService($args),
             "steptwo" => $this->primaryInquiry($args),
+            "stepthree" => $this->payment($args),
             default => 'Invalid Method !',
         };
     }
