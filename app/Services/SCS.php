@@ -38,6 +38,8 @@ class SCS  implements SCSServiceInterface
                 // ->withOptions(['debug' => true])
                 ->timeout(self::$_config['timeout'])
                 ->post(self::$_config['api_url'], $requestContent['params']);
+            
+            return  json_encode(self::$_response->body());    
               
             if (
                 self::$_response->status() === 200 &&
@@ -46,7 +48,7 @@ class SCS  implements SCSServiceInterface
                 self::$_response->json('headerStatus') == 200
             ) {
                 Log::channel('service_success')
-                    ->info('IBAN_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
+                    ->info('SCS_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 
                 return json_encode(self::$_response['data']);
             } else if (
@@ -56,7 +58,7 @@ class SCS  implements SCSServiceInterface
                 self::$_response->json('headerStatus') == 401
             ) {
                 Log::channel('service_faild')
-                    ->emergency('IBAN_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
+                    ->emergency('SCS_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 
                 return json_encode(self::$_response['data']);
             } 
@@ -64,7 +66,7 @@ class SCS  implements SCSServiceInterface
                 self::$_response->json('code') == "-1"
             ) {
                 Log::channel('service_faild')
-                    ->emergency('IBAN_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
+                    ->emergency('SCS_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 
                 return self::$_response['message'];
             }            
@@ -75,19 +77,19 @@ class SCS  implements SCSServiceInterface
                 self::$_response->json('headerStatus') == 400
             ) {
                 Log::channel('service_faild')
-                    ->emergency('IBAN_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
+                    ->emergency('SCS_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 
                 return json_encode(self::$_response['data']);
             }
             else {
                 Log::channel('service_faild')
-                    ->emergency('IBAN_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
+                    ->emergency('SCS_Service=>getQuery result=' . json_encode(self::$_response, JSON_UNESCAPED_UNICODE));
 
                 return false;
             }
         } catch (\Exception $e) {
             Log::channel('service_faild')
-                ->emergency('IBAN_Service=>getQuery' . $e->getMessage());
+                ->emergency('SCS_Service=>getQuery' . $e->getMessage());
             return false;
         }
     }

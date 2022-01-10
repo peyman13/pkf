@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class Transaction extends Model
 {
     use HasFactory;
 
@@ -17,13 +17,18 @@ class Service extends Model
 
 
     protected $fillable = [
-        'users_id',
+        'transaction_id',
         'service_id',
-        'steps',
-        'request',
-        'response',
+        'merchant_id',
+        'terminal_id',
+        'order_id',
+        'revert_url',
+        'customer_id',
+        'transaction_amount',
+        'date',
+        'time',
+        'status',
         'created_at',
         'updated_at',
     ];
-
 }

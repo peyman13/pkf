@@ -9,9 +9,9 @@ use App\Services\IPGParsianServiceInterface;
 
 class IPGParsian  implements IPGParsianServiceInterface
 {
-    private static $_config = [];
-    private static $_response = [];
-    private static $ErrorArray   = [
+    public static $_config = [];
+    public static $_response = [];
+    public static $ErrorArray   = [
         '9102' => 'مبلغ نامعتبر',
         '9104' => ' currency وارد شده صحیح نمیباشد',
         '9201' => ' دارنده کارت از پرداخت انصراف داده  ',
@@ -34,24 +34,22 @@ class IPGParsian  implements IPGParsianServiceInterface
     ];
 
 
-    private static function _init()
+    public static function _init()
     {
-        self::$_config = config('ipg-perisan.env.local');
+        self::$_config = config('ipg-parsian.env.local');
     }
 
     public function getTransaction(string $orderId, string $customer, string $price)
     {
         self::_init();
-
         try {
             $key = self::$_config['pg_key'];
 
             $request = [
-                'terminal_id' => self::$_config['terminal'],
                 'merchant_id' => self::$_config['merchant'],
+                'terminal_id' => self::$_config['terminal'],
                 'order_id' => $orderId,
                 'revert_url' => self::$_config['revert_url'],
-                'customer_id' => $customer,
                 'transaction_amount' => $price,
                 'date' => date('Y/m/d'),
                 'time' => date('H:i:s')
@@ -60,26 +58,29 @@ class IPGParsian  implements IPGParsianServiceInterface
             $sign = implode("*", $request);
 
             $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
-            
-            $request[] = ['metadata' => '',
-                          'sign' => $sign_hash];
 
-            $IPGurl = self::$_config['IPG_url'];
+            $request = array_merge($request, [
+                'customer_id' => $customer,
+                'metadata' => 'testt sdfasf 131313',
+                'sign' => $sign_hash
+            ]);
+
+            $IPGurl = self::$_config['IPG_url_transaction_request'];
             $response = Http::asForm()
-                        ->post($IPGurl, $request);
-                        
+                ->post($IPGurl, $request);
+
             $transaction_id = explode(",", $response)[1];
 
             if ($response === FALSE) {
                 Log::channel('service_faild')
-                    ->emergency('IPGParsian_Service=>getIPGParsian result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+                    ->emergency('IPGParsian_Service=>getTransaction result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
                 return [];
             }
 
             if (explode(",", $response)[0] == "00") {
 
                 Log::channel('service_success')
-                    ->info('IPGParsian_Service=>getIPGParsian result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+                    ->info('IPGParsian_Service=>getTransaction result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
 
                 return [
                     "transactionId" => $transaction_id,
@@ -88,52 +89,76 @@ class IPGParsian  implements IPGParsianServiceInterface
             }
             if (explode(",", $response)[0] != '00') {
                 Log::channel('service_faild')
-                    ->emergency('IPGParsian_Service=>getIPGParsian result=' . json_encode($this->ErrorArray[explode(",", $response)[0]], JSON_UNESCAPED_UNICODE));
+                    ->emergency('IPGParsian_Service=>getTransaction result=' . json_encode($this->ErrorArray[explode(",", $response)[0]], JSON_UNESCAPED_UNICODE));
 
                 return $this->ErrorArray[explode(",", $response)[0]];
             }
         } catch (\Exception $e) {
             Log::channel('service_faild')
-                ->emergency('IPGParsian_Service=>getIPGParsian' . $e->getMessage());
+                ->emergency('IPGParsian_Service=>getTransaction' . $e->getMessage());
             return false;
         }
     }
 
     // request is array of post parameters that sent by server IPG
-    public function getVerify($request)
+    public function getVerify($status, $order_id, $transaction_id, $trace, $rrn, $sign)
     {
-        $key = "34eaafa27f89c94b9901f33c2b4c71bc78a0ee9e12f118604722785fb25404b3d02cf1123e1daa64d84972d06527166286e0b22579ef3add448c4cde1a2e2224";
-        $sign = $request->get('status') . '*' . $request->get('order_id') . '*' . $request->get('transaction_id') . '*' . $request->get('trace')  . '*' . $request->get('rrn');
-        $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
-        if (strtolower($sign_hash) == strtolower($request->get('sign'))) {
+        self::_init();
+        try {
 
-            $iurl = "https://pec.shaparak.ir/NewPG/service/payment/transactionConfirm";
-            $ch = curl_init();
+            $key = self::$_config['pg_key'];
 
-            $terminal = "71000002";
-            $merchant = "213143400000002";
-            $transaction_id = $request->get('transaction_id');
-
-
-            $sign = $terminal . '*' . $merchant . '*' . $transaction_id;
-            $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
-
-            $data = array(
-                'terminal_id' => $terminal,
-                'merchant_id' => $merchant,
+            $request = [
+                'status' => $status,
+                'order_id' => $order_id,
                 'transaction_id' => $transaction_id,
-                'sign' => $sign
-            );
+                'trace' => $trace,
+                'rrn' => $rrn
+            ];
 
-            curl_setopt($ch, CURLOPT_URL, $iurl);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = curl_exec($ch);
+            $sign = implode("*", $request);
 
-            return $result;
+            $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
+            if (strtolower($sign_hash) == strtolower($sign)) {
+
+                $IPGurl = self::$_config['IPG_url_transaction_confirm'];
+
+                $data = [
+                    "terminal_id" => self::$_config['terminal'],
+                    "merchant_id" => self::$_config['merchant'],
+                    "transaction_id" => $transaction_id
+                ];
+
+                $sign = implode("*", $data);
+                $sign_hash = hash_hmac('sha256', $sign, pack('H*', $key));
+
+                $response = Http::asForm()
+                    ->post($IPGurl, $request);
+
+                if ($response === FALSE) {
+                    Log::channel('service_faild')
+                        ->emergency('IPGParsian_Service=>getVerify result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+                    return [];
+                }
+
+                if ($response == "00") {
+
+                    Log::channel('service_success')
+                        ->info('IPGParsian_Service=>getVerify result=' . json_encode($response, JSON_UNESCAPED_UNICODE));
+
+                    return $response;
+                }
+                if ($response != '00') {
+                    Log::channel('service_faild')
+                        ->emergency('IPGParsian_Service=>getVerify result=' . json_encode($this->ErrorArray[explode(",", $response)[0]], JSON_UNESCAPED_UNICODE));
+
+                    return $this->ErrorArray[$response];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::channel('service_faild')
+                ->emergency('IPGParsian_Service=>getVerify' . $e->getMessage());
+            return false;
         }
     }
 }

@@ -4,7 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
 use App\Events\OTPSender;
+use App\Events\IPGPersianEvent;
+use App\Events\IPGPersianConfirmEvent;
 use App\Listeners\OTPSend;
+use App\Listeners\IPGPersianListener;
+use App\Listeners\IPGPersianConfirmListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
@@ -22,6 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         OTPSender::class => [
             OTPSend::class,
+        ],
+        IPGPersianEvent::class => [
+            IPGPersianListener::class,
+        ],        
+        IPGPersianConfirmEvent::class => [
+            IPGPersianConfirmListener::class,
         ]
     ];
 
