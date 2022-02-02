@@ -5,13 +5,13 @@ return [
         'local' => [
             'api_url' => env('SCS_URL', true),
             'headers' => [
-                "X-API-KEY" => "6zE5y5442MQ29tQb8bKyYBHhSAJZSfEx", 
-                "Username" => 'mypkh',
-                "Password" => 'QzZB4tKKatPmqNRW',
+                "X-API-KEY" => "", 
+                "Username" => '',
+                "Password" => '',
             ],
             "auth" => [
-                "domain" => "icsit_prkar",
-                "pass" => "fac7Ptja3dtYUFWa",
+                "domain" => "",
+                "pass" => "",
                 "service_id" => 100100
             ],
             'debug' => true,
